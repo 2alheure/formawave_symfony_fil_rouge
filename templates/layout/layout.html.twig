@@ -6,7 +6,8 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
-			{% block title %}Portfolio de 2alheure
+			{% block title %}
+				Portfolio de 2alheure
 			{% endblock %}
 		</title>
 		{% block css %}
@@ -19,12 +20,13 @@
 		{% set route = app.request.get('_route') %}
 
 		<nav class="nav nav-fill">
-			<a class="nav-link {% if route == 'home' %}active{% endif %}" aria-current="page" href="{{ path('home') }}">Active</a>
+			<a class="nav-link {% if route == 'home' %}active{% endif %}" aria-current="page" href="{{ path('home') }}">Accueil</a>
 			<a class="nav-link {% if route == 'cv' %}active{% endif %}" href="{{ path('cv') }}">CV</a>
 			<a class="nav-link {% if route == 'about' %}active{% endif %}" href="{{ path('about') }}">À propos</a>
 		</nav>
 
-		{% block body %}Cette page est vide.
+		{% block body %}
+			Cette page est vide.
 		{% endblock %}
 
 		{% block js %}
