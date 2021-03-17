@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TestDoctrineController extends AbstractController {
     /**
-     * @Route("/test/doctrine", name="test_doctrine")
+     * @Route("/test/doctrine/create", name="test_doctrine_create")
      */
-    public function index(): Response {
+    public function create(): Response {
 
         $project = new Project();       // On crée un projet
 
@@ -24,15 +24,56 @@ class TestDoctrineController extends AbstractController {
 
         // On récupère notre entity manager
         $entityManager = $this->getDoctrine()->getManager();
-        
+
         // On lui dit de s'occuper de notre nouveau projet
         $entityManager->persist($project);
 
         // On "sauvegarde" toutes les modifications
         $entityManager->flush();
 
-        return $this->render('test_doctrine/index.html.twig', [
-            'controller_name' => 'TestDoctrineController',
-        ]);
+        return $this->render('test_doctrine/index.html.twig');
+    }
+
+    /**
+     * @Route("/test/doctrine/retrieve", name="test_doctrine_retrieve")
+     */
+    public function retrieve() {
+        $repository = $this->getDoctrine()->getRepository(Project::class);
+
+        $project = $repository->find(4);
+
+        return $this->render('test_doctrine/index.html.twig');
+    }
+
+    /**
+     * @Route("/test/doctrine/update", name="test_doctrine_update")
+     */
+    public function update() {
+        $repository = $this->getDoctrine()->getRepository(Project::class);
+
+        $project = $repository->find(3);
+
+        $project->setName('Updated name 2');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($project);
+        $em->flush();
+
+        return $this->render('test_doctrine/index.html.twig');
+    }
+
+    /**
+     * @Route("/test/doctrine/delete", name="test_doctrine_delete")
+     */
+    public function delete() {
+        $repository = $this->getDoctrine()->getRepository(Project::class);
+        $project = $repository->find(3);
+
+        
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($project);
+        $em->flush();
+
+        return $this->render('test_doctrine/index.html.twig');
     }
 }
