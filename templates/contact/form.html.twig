@@ -1,0 +1,9 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}Formulaire de contact{% endblock %}
+
+{% block body %}
+	<div class="container">
+		{{ form(form, {'action': path('contact')}) }}
+		</div>
+	{% endblock %}
