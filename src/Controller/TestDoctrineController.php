@@ -3,13 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Project;
+use App\Form\Type\ProjectType;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,26 +15,27 @@ class TestDoctrineController extends AbstractController {
     /**
      * @Route("/test/doctrine/create", name="test_doctrine_create")
      */
-    public function create(): Response {
+    public function create(Request $request): Response {
 
         $project = new Project();
 
-        $form = $this->createFormBuilder($project)
-            ->add('name', TextType::class, [
-                'label' => 'Nom',
-            ])
-            ->add('description', TextareaType::class)
-            ->add('date', DateType::class)
-            ->add('url', UrlType::class)
-            ->add('image', UrlType::class)
-            ->add('submit', SubmitType::class, [
-                'label' => 'Créer un projet'
-            ])
-            ->getForm();
+        $form = $this->createForm(ProjectType::class, $project);
 
-        return $this->render('test_doctrine/index.html.twig', [
-            'form' => $form->createView()
-        ]);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->render('test_doctrine/index.html.twig', [
+                'formulaire' => $form->createView(),
+            ]);
+        } else {
+            // On utilise les données de notre formulaire
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($project);
+            $entityManager->flush();
+
+            return new Response('OK');
+        }
     }
 
     /**
@@ -71,23 +69,27 @@ class TestDoctrineController extends AbstractController {
     /**
      * @Route("/test/doctrine/update/{id}", name="test_doctrine_update")
      */
-    public function update($id) {
+    public function update(Request $request, $id) {
         $repository = $this->getDoctrine()->getRepository(Project::class);
-
         $project = $repository->find($id);
 
-        if (empty($project)) throw new NotFoundHttpException();
+        $form = $this->createForm(ProjectType::class, $project);
 
-        $project->setName('Updated name 2');
+        $form->handleRequest($request);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($project);
-        // Doctrine exécute les requêtes SQL 
-        // Qui correspondent à l'opération souhaitée
-        // Ici : UPDATE ...
-        $em->flush();
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->render('test_doctrine/index.html.twig', [
+                'formulaire' => $form->createView(),
+            ]);
+        } else {
+            // On utilise les données de notre formulaire
 
-        return $this->render('test_doctrine/index.html.twig');
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($project);
+            $entityManager->flush();
+
+            return new Response('OK');
+        }
     }
 
     /**

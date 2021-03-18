@@ -5,6 +5,14 @@
 
 {% block body %}
 	<div class="container">
-		{{ form(form) }}
+		{{ 
+			form(
+				formulaire, 
+				{
+					'action': path('test_doctrine_create'),
+					'method': 'POST'
+				}
+			) 
+		}}
 		</div>
 	{% endblock %}
