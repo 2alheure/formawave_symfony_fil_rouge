@@ -34,7 +34,9 @@ class TestDoctrineController extends AbstractController {
             $entityManager->persist($project);
             $entityManager->flush();
 
-            return new Response('OK');
+            return $this->redirectToRoute('test_doctrine_retrieve', [
+                'id' => $project->getId()
+            ]);
         }
     }
 
