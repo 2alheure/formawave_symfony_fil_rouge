@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Tous les articles
+{% endblock %}
+
+{% block body %}
+	<div style="display: flex;">
+		{% for a in articles %}
+			<div style="display: inline-block; width: 30%;">
+				<img src="{{a.image}}" alt="Avatar" style="width:100%">
+				<div class="container">
+					<h4>{{a.titre}}</h4>
+					<p>Publié le
+						{{a.date|date('d/m/Y')}}</p>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
