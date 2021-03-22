@@ -4,7 +4,8 @@
 {% endblock %}
 
 {% block body %}
-	{{ form( 
+	<div class="container">
+		{{ form( 
         form, 
         { 
             'action': path(
@@ -15,4 +16,5 @@
             )
         } 
     ) }}
-    {% endblock %}
+		</div>
+	{% endblock %}
