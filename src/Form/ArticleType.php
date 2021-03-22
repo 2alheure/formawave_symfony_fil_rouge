@@ -5,12 +5,13 @@ namespace App\Form;
 use App\Entity\Article;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ArticleType extends AbstractType
 {
@@ -20,7 +21,20 @@ class ArticleType extends AbstractType
             ->add('titre', TextType::class)
             ->add('date', DateType::class)
             ->add('contenu', TextareaType::class)
-            ->add('image', UrlType::class)
+            ->add('image', FileType::class, [
+                'label' => 'Image d\'illustration de l\'article',
+                'data_class' => null,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ]
+                    ]),
+                ]
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Envoyer'
             ])

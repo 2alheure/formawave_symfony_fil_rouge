@@ -5,16 +5,7 @@
 
 {% block body %}
 	<div class="container">
-		{{ form( 
-        form, 
-        { 
-            'action': path(
-                'modifier_article', 
-                {
-                    'id': id
-                }
-            )
-        } 
-    ) }}
+		<img src="{{asset('img/articles/' ~ oldImage)}}" alt="">
+		{{ form( form, {'action': path('modifier_article', {'id': id}) }) }}
 		</div>
 	{% endblock %}

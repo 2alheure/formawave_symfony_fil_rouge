@@ -7,7 +7,7 @@
 	<div style="display: flex;">
 		{% for a in articles %}
 			<div style="display: inline-block; width: 30%;">
-				<img src="{{a.image}}" alt="Avatar" style="width:100%">
+				<img src="{{asset('img/articles/' ~ a.image)}}" alt="Avatar" style="width:100%">
 				<div class="container">
 					<h4>{{a.titre}}</h4>
 					<p>Publié le
