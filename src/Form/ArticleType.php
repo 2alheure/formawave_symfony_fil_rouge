@@ -22,7 +22,7 @@ class ArticleType extends AbstractType
             ->add('contenu', TextareaType::class)
             ->add('image', UrlType::class)
             ->add('submit', SubmitType::class, [
-                'label' => 'Créer un article'
+                'label' => 'Envoyer'
             ])
         ;
     }

@@ -38,6 +38,18 @@ class ArticleController extends AbstractController {
     }
 
     /**
+     * @Route("/gerer-articles", name="gerer_articles")
+     */
+    public function gererArticles(): Response {
+        $repository = $this->getDoctrine()->getRepository(Article::class);
+        $articles = $repository->findAll();
+
+        return $this->render('article/gerer-articles.html.twig', [
+            'articles' => $articles
+        ]);
+    }
+
+    /**
      * @Route("/creer-un-article", name="creer_article")
      */
     public function creerArticle(Request $r): Response {
@@ -53,6 +65,7 @@ class ArticleController extends AbstractController {
                 'form' => $form->createView()
             ]);
         } else {
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($article);
             $em->flush();
@@ -87,5 +100,22 @@ class ArticleController extends AbstractController {
 
             return $this->redirect('/article/' . $article->getId());
         }
+    }
+
+    /**
+     * @Route("/supprimer-un-article/{id}", name="supprimer_article")
+     */
+    public function supprimerArticle($id): Response {
+
+        $repo = $this->getDoctrine()->getRepository(Article::class);
+        $article = $repo->find($id);
+
+        if (empty($article)) throw new NotFoundHttpException();
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($article);
+        $em->flush();
+
+        return $this->redirectToRoute('gerer_articles');
     }
 }
