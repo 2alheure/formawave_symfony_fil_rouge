@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Commentaire;
 use App\Form\ArticleType;
+use App\Form\CommentaireType;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -24,8 +26,11 @@ class ArticleController extends AbstractController {
 
         if (empty($article)) throw new NotFoundHttpException();
 
+        $formCommentaire = $this->createForm(CommentaireType::class, new Commentaire());
+
         return $this->render('article/index.html.twig', [
-            'article' => $article
+            'article' => $article,
+            'form' => $formCommentaire->createView()
         ]);
     }
 
