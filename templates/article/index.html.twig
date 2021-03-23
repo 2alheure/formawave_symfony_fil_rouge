@@ -4,9 +4,20 @@
 {% endblock %}
 
 {% block body %}
+<div class="container">
 	<h1>{{ article.titre }}</h1>
 	<img src="{{ asset('img/articles/' ~ article.image) }}" alt="">
 	<p>Publié le
 		{{article.date|date('d/m/Y')}}</p>
 	<p>{{article.contenu}}</p>
+
+	{% for commentaire in article.commentaires %}
+	<p>
+		<span class="d-block">Le {{ commentaire.date|date('d/m/Y') }}</span>
+		{{ commentaire.contenu }}
+	</p>
+	{% else %}
+	<p>Cet article n'a pas encore de commentaire.</p>
+	{% endfor %}
+</div>
 {% endblock %}
