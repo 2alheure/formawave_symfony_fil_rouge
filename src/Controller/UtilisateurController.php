@@ -10,19 +10,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/utilisateur")
  * 
- * @IsGranted("ROLE_SUPER_ADMIN")
+ * @IsGranted("ROLE_ADMIN")
  */
-class UtilisateurController extends AbstractController
-{
+class UtilisateurController extends AbstractController {
     /**
      * @Route("/", name="utilisateur_index", methods={"GET"})
      */
-    public function index(UtilisateurRepository $utilisateurRepository): Response
-    {
+    public function index(UtilisateurRepository $utilisateurRepository): Response {
         return $this->render('utilisateur/index.html.twig', [
             'utilisateurs' => $utilisateurRepository->findAll(),
         ]);
@@ -31,13 +30,15 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/new", name="utilisateur_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
-    {
+    public function new(Request $request, UserPasswordEncoderInterface $encoder): Response {
         $utilisateur = new Utilisateur();
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $encodedPassword = $encoder->encodePassword($utilisateur, $utilisateur->getPassword());
+            $utilisateur->setPassword($encodedPassword);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($utilisateur);
             $entityManager->flush();
@@ -54,8 +55,7 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/{id}", name="utilisateur_show", methods={"GET"})
      */
-    public function show(Utilisateur $utilisateur): Response
-    {
+    public function show(Utilisateur $utilisateur): Response {
         return $this->render('utilisateur/show.html.twig', [
             'utilisateur' => $utilisateur,
         ]);
@@ -64,13 +64,23 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/{id}/edit", name="utilisateur_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Utilisateur $utilisateur): Response
-    {
+    public function edit(Request $request, UserPasswordEncoderInterface $encoder, Utilisateur $utilisateur): Response {
+        $oldPassword = $utilisateur->getPassword();
+
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if (!empty($utilisateur->getPassword())) {
+                $encodedPassword = $encoder->encodePassword($utilisateur, $utilisateur->getPassword());
+                $utilisateur->setPassword($encodedPassword);
+            } else {
+                $utilisateur->setPassword($oldPassword);
+            }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($utilisateur);
+            $entityManager->flush();
 
             return $this->redirectToRoute('utilisateur_index');
         }
@@ -84,9 +94,8 @@ class UtilisateurController extends AbstractController
     /**
      * @Route("/{id}", name="utilisateur_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Utilisateur $utilisateur): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$utilisateur->getId(), $request->request->get('_token'))) {
+    public function delete(Request $request, Utilisateur $utilisateur): Response {
+        if ($this->isCsrfTokenValid('delete' . $utilisateur->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($utilisateur);
             $entityManager->flush();
