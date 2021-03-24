@@ -37,6 +37,21 @@
 		{% endif %}
 	</nav>
 
+	<div class="container" id="handle-alerts">
+		{% for error in app.flashes('error') %}
+		<div class="alert alert-danger">{{error}}</div>
+		{% endfor %}
+
+		{% for info in app.flashes('info') %}
+		<div class="alert alert-info">{{info}}</div>
+		{% endfor %}
+
+		{% for success in app.flashes('success') %}
+		<div class="alert alert-success">{{success}}</div>
+		{% endfor %}
+	</div>
+
+
 	{% block body %}
 	Cette page est vide.
 	{% endblock %}
