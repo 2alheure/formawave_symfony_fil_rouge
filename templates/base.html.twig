@@ -26,8 +26,11 @@
 			href="{{ path('home') }}">Accueil</a>
 		<a class="nav-link {% if route == 'cv' %}active{% endif %}" href="{{ path('cv') }}">CV</a>
 		<a class="nav-link {% if route == 'about' %}active{% endif %}" href="{{ path('about') }}">À propos</a>
+
+		{% if is_granted('ROLE_ADMIN') %}
 		<a class="nav-link {% if route == 'gerer_articles' %}active{% endif %}"
 			href="{{ path('gerer_articles') }}">Gérer les articles</a>
+		{% endif %}
 
 		{% if app.user %}
 		<a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
