@@ -30,6 +30,8 @@
 		{% if is_granted('ROLE_ADMIN') %}
 		<a class="nav-link {% if route == 'gerer_articles' %}active{% endif %}"
 			href="{{ path('gerer_articles') }}">Gérer les articles</a>
+		<a class="nav-link {% if route == 'utilisateur_index' %}active{% endif %}"
+			href="{{ path('utilisateur_index') }}">Gérer les utilisateurs</a>
 		{% endif %}
 
 		{% if app.user %}
