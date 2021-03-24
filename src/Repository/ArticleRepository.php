@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Article|null findOneBy(array $criteria, array $orderBy = null)
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Article[]    findByTitle(string $title)
  */
 class ArticleRepository extends ServiceEntityRepository
 {
@@ -19,32 +20,19 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    // /**
-    //  * @return Article[] Returns an array of Article objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    public function findByTitle($title) {
+        return $this->findBy([
+            'titre' => $title
+        ]);
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Article
-    {
+    public function test($titre) {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+                    ->select('a')
+                    ->where('a.titre LIKE :titre')
+                    ->setParameter('titre', '%' . $titre . '%')
+                    ->getQuery()
+                    ->getResult();
     }
-    */
+
 }
