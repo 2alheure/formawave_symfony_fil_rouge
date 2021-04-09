@@ -59,20 +59,17 @@ class AuthentificationController extends AbstractController {
                     new NotBlank()
                 ]
             ])
-            ->add('password', PasswordType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length([
-                        'min' => 8
-                    ])
-                ]
-            ])
-            ->add('check_password', PasswordType::class, [
-                'constraints' => [
-                    new EqualTo([
-                        'propertyPath' => 'password'
-                    ])
-                ]
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options'  => [
+                    'label' => 'Mot de passe',
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ],
+                'second_options' => [
+                    'label' => 'Confirmation du mot de passe'
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Créer un compte'
@@ -82,13 +79,13 @@ class AuthentificationController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $user = new Utilisateur();
-            
+
             $formData = $form->getData();
 
             $encodedPassword = $encoder->encodePassword($user, $formData['password']);
-            
+
             $user->setPassword($encodedPassword);
             $user->setPseudo($formData['pseudo']);
             $user->setEmail($formData['email']);
