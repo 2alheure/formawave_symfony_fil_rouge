@@ -1,39 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>
-			{% block title %}
-				Portfolio de 2alheure
-			{% endblock %}
-		</title>
-		{% block css %}
-			<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-			<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>
+		{% block title %}
+		Portfolio de 2alheure
 		{% endblock %}
-	</head>
-	<body>
+	</title>
+	{% block css %}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+	{% endblock %}
+</head>
 
-		{% set route = app.request.get('_route') %}
+<body>
 
-		<nav class="nav nav-fill">
-			<a class="nav-link {% if route == 'home' %}active{% endif %}" aria-current="page" href="{{ path('home') }}">Accueil</a>
-			<a class="nav-link {% if route == 'cv' %}active{% endif %}" href="{{ path('cv') }}">CV</a>
-			<a class="nav-link {% if route == 'about' %}active{% endif %}" href="{{ path('about') }}">À propos</a>
-			<a class="nav-link {% if route == 'gerer_articles' %}active{% endif %}" href="{{ path('gerer_articles') }}">Gérer les articles</a>
-		</nav>
+	{% set route = app.request.get('_route') %}
 
-		{% block body %}
-			Cette page est vide.
-		{% endblock %}
+	<nav class="nav nav-fill">
+		<a class="nav-link {% if route == 'home' %}active{% endif %}" aria-current="page"
+			href="{{ path('home') }}">Accueil</a>
+		<a class="nav-link {% if route == 'cv' %}active{% endif %}" href="{{ path('cv') }}">CV</a>
+		<a class="nav-link {% if route == 'about' %}active{% endif %}" href="{{ path('about') }}">À propos</a>
 
-		{% block js %}
-			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-		{% endblock %}
-	</body>
+		{% if is_granted('ROLE_ADMIN') %}
+		<a class="nav-link {% if route == 'gerer_articles' %}active{% endif %}"
+			href="{{ path('gerer_articles') }}">Gérer les articles</a>
+		<a class="nav-link {% if route == 'utilisateur_index' %}active{% endif %}"
+			href="{{ path('utilisateur_index') }}">Gérer les utilisateurs</a>
+		{% endif %}
+
+		{% if app.user %}
+		<a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+		{% else %}
+		<a class="nav-link {% if route == 'app_login' %}active{% endif %}" href="{{ path('app_login') }}">Se
+			connecter</a>
+		{% endif %}
+	</nav>
+
+	<div class="container" id="handle-alerts">
+		{% for error in app.flashes('error') %}
+		<div class="alert alert-danger">{{error}}</div>
+		{% endfor %}
+
+		{% for info in app.flashes('info') %}
+		<div class="alert alert-info">{{info}}</div>
+		{% endfor %}
+
+		{% for success in app.flashes('success') %}
+		<div class="alert alert-success">{{success}}</div>
+		{% endfor %}
+	</div>
+
+
+	{% block body %}
+	Cette page est vide.
+	{% endblock %}
+
+	{% block js %}
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	{% endblock %}
+</body>
+
 </html>

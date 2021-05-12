@@ -11,9 +11,11 @@
 		{{article.date|date('d/m/Y')}}</p>
 	<p>{{article.contenu}}</p>
 
+	{{ form( form, {'action': path( 'creer_commentaire', {'article_id': article.id} )} ) }}
+
 	{% for commentaire in article.commentaires %}
 	<p>
-		<span class="d-block">Le {{ commentaire.date|date('d/m/Y') }}</span>
+		<span class="d-block font-weight-bold">Le {{ commentaire.date|date('d/m/Y') }}</span>
 		{{ commentaire.contenu }}
 	</p>
 	{% else %}

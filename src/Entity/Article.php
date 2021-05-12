@@ -50,6 +50,12 @@ class Article
      */
     private $commentaires;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Utilisateur::class, inversedBy="articles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $auteur;
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
@@ -134,6 +140,18 @@ class Article
                 $commentaire->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuteur(): ?Utilisateur
+    {
+        return $this->auteur;
+    }
+
+    public function setAuteur(?Utilisateur $auteur): self
+    {
+        $this->auteur = $auteur;
 
         return $this;
     }

@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Commentaire;
 use App\Form\ArticleType;
+use App\Form\CommentaireType;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -13,6 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class ArticleController extends AbstractController {
     /**
@@ -24,8 +28,11 @@ class ArticleController extends AbstractController {
 
         if (empty($article)) throw new NotFoundHttpException();
 
+        $formCommentaire = $this->createForm(CommentaireType::class, new Commentaire());
+
         return $this->render('article/index.html.twig', [
-            'article' => $article
+            'article' => $article,
+            'form' => $formCommentaire->createView()
         ]);
     }
 
@@ -43,6 +50,8 @@ class ArticleController extends AbstractController {
 
     /**
      * @Route("/gerer-articles", name="gerer_articles")
+     * 
+     * @IsGranted("ROLE_ADMIN")
      */
     public function gererArticles(): Response {
         $repository = $this->getDoctrine()->getRepository(Article::class);
